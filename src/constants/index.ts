@@ -1,3 +1,3 @@
- const API_BASE_URL = 'http://78.47.176.219:5001/api';
+ const API_BASE_URL = 'https://api.myastra.com.tr/api';
 
  export { API_BASE_URL };
