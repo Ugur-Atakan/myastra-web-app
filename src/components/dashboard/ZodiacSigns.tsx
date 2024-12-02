@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { calculateZodiacSign, calculateAscendant } from '../../utils/astrology';
 import { getZodiacEmoji } from '../../utils/zodiacEmojis';
+import { useAppSelector } from '../../store/hooks';
 
 export default function ZodiacSigns() {
   const [sunSign, setSunSign] = useState<string>('');
   const [ascendant, setAscendant] = useState<string>('');
   const [loading, setLoading] = useState(true);
+
+  const userData=useAppSelector((state) => state.user.userData);
 
   useEffect(() => {
     const fetchBirthChart = async () => {
@@ -17,13 +20,17 @@ export default function ZodiacSigns() {
   if (loading) {
     return (
       <div className="bg-white rounded-2xl p-6 shadow-sm animate-pulse">
+        <div className="h-8 bg-gray-100 rounded-lg mb-4">Hoşgeldin {userData.firstName}</div>
         <div className="h-24 bg-gray-100 rounded-lg"></div>
       </div>
     );
   }
 
+
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm">
+      {/* Header */}
+      {userData.firstName}
       <h2 className="text-lg font-semibold text-gray-900 mb-4">Burç Bilgileriniz</h2>
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-FDEAE9 rounded-xl p-4">

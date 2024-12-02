@@ -1,6 +1,9 @@
 import DashboardLayout from '../components/layout/DashboardLayout';
 import AstrologerCard from '../components/astrologers/AstrologerCard';
 import { Search } from 'lucide-react';
+import { useIncompleteDataCheck } from '../hooks/useIncompleteDataCheck';
+import BirthChartForm from '../components/common/BirthChartForm';
+import toast from 'react-hot-toast';
 
 const astrologers = [
   {
@@ -50,6 +53,14 @@ const astrologers = [
 ];
 
 export default function Astrologers() {
+  const { isModalOpen, setIsModalOpen, missingFields, checkDataAndProceed } = useIncompleteDataCheck();
+
+
+const handleAction = (astrolog:any) => {
+  toast.success(`Astrolog ${astrolog.name} seçildi`);
+console.log('handleAction');
+  }
+
   return (
     <DashboardLayout>
       <div className="max-w-6xl mx-auto">
@@ -76,10 +87,14 @@ export default function Astrologers() {
         {/* Astrologer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {astrologers.map((astrolog) => (
-            <AstrologerCard key={astrolog.id} astrolog={astrolog} />
+            <AstrologerCard key={astrolog.id} astrolog={astrolog} onAction={() => checkDataAndProceed(() => handleAction(astrolog))} />
           ))}
         </div>
       </div>
+      <BirthChartForm
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
     </DashboardLayout>
   );
 }

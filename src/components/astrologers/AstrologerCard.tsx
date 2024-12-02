@@ -14,9 +14,10 @@ interface Astrolog {
 
 interface AstrologCardProps {
   astrolog: Astrolog;
+  onAction: (params: any) => void;
 }
 
-export default function AstrologerCard({ astrolog }: AstrologCardProps) {
+export default function AstrologerCard({ astrolog,onAction }: AstrologCardProps) {
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-shadow duration-300 flex flex-col h-full">
       <div className="flex items-start gap-4 mb-4">
@@ -72,7 +73,7 @@ export default function AstrologerCard({ astrolog }: AstrologCardProps) {
           </span>
           <span className="text-sm text-gray-500">/seans</span>
         </div>
-        <button className="bg-EF7874 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-colors">
+        <button onClick={onAction} className="bg-EF7874 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-colors">
           Randevu Al
         </button>
       </div>

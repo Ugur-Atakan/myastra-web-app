@@ -3,7 +3,6 @@ import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import BirthChartForm from "./pages/BirthChartForm";
 import Dashboard from "./pages/Dashboard";
 import BirthChartAnalysis from "./pages/BirthChartAnalysis";
 import Astrologers from "./pages/Astrologers";
@@ -26,14 +25,6 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route
-            path="/birth-chart"
-            element={
-              <ProtectedRoute>
-                <BirthChartForm />
-              </ProtectedRoute>
-            }
-          />
           <Route
             path="/dashboard"
             element={

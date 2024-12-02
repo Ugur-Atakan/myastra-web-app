@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Heart, Sparkles, ArrowRight } from 'lucide-react';
+import { Heart, Sparkles, ArrowRight, ArrowDown } from 'lucide-react';
 
 export default function HeroSection() {
   const navigate = useNavigate();
@@ -39,9 +39,9 @@ export default function HeroSection() {
                 Analize Başla
               </button>
               
-              <button className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-xl text-lg font-medium hover:bg-gray-50 transition-all border border-gray-200">
+              <button className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-xl text-lg font-medium transition-all border border-gray-200">
                 Daha Fazla Bilgi
-                <ArrowRight className="h-5 w-5" />
+                <ArrowDown className="h-5 w-5" />
               </button>
             </div>
           </div>

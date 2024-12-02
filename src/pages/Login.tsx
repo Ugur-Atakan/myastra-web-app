@@ -14,8 +14,6 @@ export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  console.log('Login page');
-
   useEffect(() => {
     // If user is already logged in, redirect to dashboard
     const tokens=getUserTokens();
@@ -36,13 +34,17 @@ export default function Login() {
     saveUserTokens(response.data.tokens);
     setLoading(false);
     navigate('/dashboard');
-  
     } catch (error:any) {
-      const errorMessage = error.response.data.message;
-    toast.error(`Login failed becaus ${errorMessage}`);
-    }
+      const errorCode = error.response.status;
+       setLoading(false);
+      switch (errorCode) {
+        case 404:
+          toast.error('Kullanıcı adı veya şifre hatalı');
+          break;
+        default:
+        }
     };
-  
+  }
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-white p-4">
@@ -111,5 +113,3 @@ export default function Login() {
     </div>
   );
 }
-
- 

@@ -1,9 +1,19 @@
 import { useNavigate } from 'react-router-dom';
-import { Activity, Sparkles, ArrowRight } from 'lucide-react';
+import { Activity, Sparkles, ArrowRight, ArrowDown } from 'lucide-react';
+import BirthChartForm from '../common/BirthChartForm';
+import { useIncompleteDataCheck } from '../../hooks/useIncompleteDataCheck';
 
 export default function HeroSection() {
+  const { isModalOpen, setIsModalOpen, missingFields, checkDataAndProceed } = useIncompleteDataCheck();
+
+
   const navigate = useNavigate();
 
+
+
+  const handleAction = () => {
+    navigate('/dashboard/birth-chart');
+  }
   return (
     <div className="relative overflow-hidden">
       {/* Background Elements */}
@@ -33,16 +43,16 @@ export default function HeroSection() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <button 
-                onClick={() => navigate('/dashboard/birth-chart/analysis')}
+               onClick={() => checkDataAndProceed(handleAction)}
                 className="inline-flex items-center justify-center gap-2 bg-EF7874 text-white px-8 py-4 rounded-xl text-lg font-medium hover:bg-opacity-90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
               >
                 <Activity className="h-5 w-5" />
                 Doğum Haritamı Analiz Et
               </button>
               
-              <button className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-xl text-lg font-medium hover:bg-gray-50 transition-all border border-gray-200">
-                Paketleri İncele
-                <ArrowRight className="h-5 w-5" />
+              <button disabled className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-xl text-lg font-medium">
+                Daha Fazla Bilgi
+                <ArrowDown className="h-5 w-5" />
               </button>
             </div>
           </div>
@@ -66,6 +76,10 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
+      <BirthChartForm
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
     </div>
   );
 }

@@ -1,10 +1,12 @@
+import { ArrowLeft } from "lucide-react";
 import { useAppSelector } from "../store/hooks";
+import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
 
-const userData=useAppSelector((state)=>state.user.userData);
+    const userData=useAppSelector((state) => state.user.userData);
 
-console.log('User data:',userData);
+    const navigate = useNavigate();
    
     return (
 
@@ -44,6 +46,13 @@ console.log('User data:',userData);
                         </div>
                     </div>
                 </div>
+                <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center justify-center gap-2 bg-EF7874 text-white px-6 py-3 rounded-xl font-medium hover:bg-opacity-90 transition-all"
+        >
+          <ArrowLeft className="h-5 w-5" />
+          Geri Dön
+        </button>
             </div>
         </div>
     )

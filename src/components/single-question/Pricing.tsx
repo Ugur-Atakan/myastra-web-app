@@ -14,8 +14,7 @@ const dispatch = useAppDispatch();
 
   const getPackages = async () => {
     const response = await instance.get("/market/reports/Horary");
-    const packages = response.data?.packages;
-    console.log('Horary packages:', response.data);
+    const packages = response.data[0]?.packages;
     if (!packages || packages.length === 0) {
       console.log("No packages found");
       return;
@@ -45,9 +44,9 @@ const dispatch = useAppDispatch();
           Şimdi uygun fiyatlarla bu eşsiz deneyimi yaşayın!
         </p>
       </div>
-{!horaryPackages|| horaryPackages.length >= 0 ? (
+{!horaryPackages|| horaryPackages.length < 0 ? (
      <NoPackageComponent />
-    ):(horaryPackages?.map((pkg, index) => (
+    ):(horaryPackages?.map((pkg) => (
       <div className="max-w-lg mx-auto">
             <div className="bg-FDEAE9 rounded-xl p-8 text-center mb-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Tek Soru Astrolojisi</h3>

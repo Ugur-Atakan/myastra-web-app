@@ -51,11 +51,14 @@ export const userSlice = createSlice({
       state.userData = initialState.userData;
       state.isLoggedIn = false;
     },
+    setUserData: (state, action: PayloadAction<User>) => {
+      state.userData = action.payload;
+    },
     updateUser: (state, action: PayloadAction<UserInterface>) => {
       state.userData = action.payload.user;
     },
   },
 });
-export const {login, logOut, updateUser} = userSlice.actions;
+export const {login, logOut, updateUser,setUserData} = userSlice.actions;
 export const userActions = userSlice.actions;
 export default userSlice.reducer;

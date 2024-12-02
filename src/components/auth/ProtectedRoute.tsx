@@ -2,11 +2,11 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import AccessDenied from './AccessDenied';
-import { getUserTokens } from '../../utils/storage';
+import { getUserTokens, removeTokens } from '../../utils/storage';
 import { useAppDispatch } from '../../store/hooks';
 import instance from '../../http/instance';
-import { login } from '../../store/slices/userSlice';
-import { useEffect } from 'react';
+import { logOut, setUserData } from '../../store/slices/userSlice';
+import { useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
 
 interface ProtectedRouteProps {
@@ -15,46 +15,37 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children, requiredRoles }: ProtectedRouteProps) {
-  const { userData } = useSelector((state: RootState) => state.user);
+  const userData = useSelector((state: RootState) => state.user.userData);
   const location = useLocation();
+  const dispatch = useAppDispatch();
 
-  const dispatch=useAppDispatch();
-
-  const userTokens = getUserTokens();
-  console.log('User tokens:', userTokens);
+  // `getUserTokens` çıktısını bir kez hesaplayarak referansı sabit tut
+  const tokens = useMemo(() => getUserTokens(), []);
 
   const getUserData = async () => {
     try {
       const response = await instance.post('/user/me');
-      console.log('User data:', response.data); 
-      dispatch(login(response.data));
+      console.log('User data fetched:', response.data); 
+      dispatch(setUserData(response.data));
     } catch (error: any) {
-      let errorMessage = 'An unexpected error occurred.';
-      
-      // Hata nesnesini güvenli bir şekilde işle
-      if (error.response && error.response.data && error.response.data.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.message) {
-        errorMessage = error.message; // Ağ hataları için
-      }
-  
-      console.error('Failed to get user data:', error);
-      toast.error(`Failed to get user data because: ${errorMessage}`);
+      const errorMessage = error?.response?.data?.message || error.message || 'An unexpected error occurred.';
+      console.error('Failed to get user data:', errorMessage);
+      toast.error(`Failed to get user data: ${errorMessage}`);
+      removeTokens();
+      dispatch(logOut());
     }
   };
 
-  useEffect (() => {
-    if (userTokens) {
+  useEffect(() => {
+    if (tokens) {
       getUserData();
     }
-  }, [userTokens]);
+  }, [tokens]);
 
-  // If there's no token, redirect to login
-  if (!userTokens) {
+  if (!tokens) {
     return <Navigate to="/" state={{ from: location }} replace />;
   }
 
-  // If roles are required but user has no roles or doesn't have the required role
   if (requiredRoles && (!userData?.roles || !requiredRoles.some(role => userData.roles.includes(role)))) {
     return <AccessDenied />;
   }

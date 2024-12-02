@@ -33,7 +33,8 @@ export default function Reports() {
         
         const reportsData = Array.isArray(reportsResponse.data) ? reportsResponse.data : [];
         const ordersData = Array.isArray(ordersResponse.data) ? ordersResponse.data : [];
-        
+        console.log('Raporlar:', reportsData);
+        console.log('Siparişler:', ordersData);
         setReports(reportsData);
         setOrders(ordersData);
       } catch (error) {
