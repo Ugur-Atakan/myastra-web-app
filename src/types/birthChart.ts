@@ -24,3 +24,15 @@ export interface BuyPackageRequest {
 }
 
 
+
+export interface BirthChartUpdateRequest {
+  birthYear: number
+  birthMonth: number
+  birthDay: number
+  birthHour: number
+  birthMinute: number
+  latitude: number
+  longitude: number
+  city: string
+  timezone: string
+}

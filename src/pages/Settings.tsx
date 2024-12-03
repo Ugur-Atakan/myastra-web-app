@@ -9,7 +9,6 @@ export default function Settings() {
     const navigate = useNavigate();
    
     return (
-
         <div className="max-w-7xl mx-auto px-4 py-8">
             <h2 className="text-2xl font-semibold mb-4">Ayarlar</h2>
             <div className="bg-white p-4 rounded-lg shadow">

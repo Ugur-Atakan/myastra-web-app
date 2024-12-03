@@ -10,6 +10,7 @@ interface BirthChartFormProps {
   onClose: () => void;
 }
 
+
 export default function BirthChartForm({ isOpen, onClose }: BirthChartFormProps) {
   const [birthDay, setBirthDay] = useState('');
   const [birthMonth, setBirthMonth] = useState('');
@@ -50,21 +51,23 @@ export default function BirthChartForm({ isOpen, onClose }: BirthChartFormProps)
 
     try {
       const results = await getGeocode({ address: value });
-      const { lat, lng } = await getLatLng(results[0]);
-      const cityName = extractCityName(value);
-      console.log({ lat, lng, cityName, birthDay, birthMonth, birthYear, birthHour, birthMinute });
-     const response=  await instance.put('/user/edit-astrological-data', {
-      latitude:lat,
-        longitude:lng,
-        city:cityName,
-        timeZone: 0,
-        birthDay:Number(birthDay),
-        birthMonth:Number(birthMonth),
-        birthYear:Number(birthYear),
-        birthHour:Number(birthHour),
-        birthMinute:Number(birthMinute),
-        gender,
-      }
+      const { lat:latitude, lng:longitude } = await getLatLng(results[0]);
+      const city = extractCityName(value);
+
+      const payload={
+          latitude,
+          longitude,
+          city,
+          gender,
+          timeZone:'Europe/Istanbul',
+          birthDay:Number(birthDay),
+          birthMonth:Number(birthMonth),
+          birthYear:Number(birthYear),
+          birthHour:Number(birthHour),
+          birthMinute:Number(birthMinute)
+        }
+      console.table(payload);
+     const response=  await instance.put('/user/edit-astrological-data', payload
       )
       console.log(response.data);
       if(response.data){

@@ -15,7 +15,7 @@ export default function Support() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await instance.get('/support/tickets');
+        const response = await instance.get('/support/my-tickets');
         const ticketsData = Array.isArray(response.data) ? response.data : [];
         setTickets(ticketsData);  
       } catch (error) {
