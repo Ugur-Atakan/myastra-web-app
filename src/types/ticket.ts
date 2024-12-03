@@ -3,10 +3,12 @@ export interface Ticket {
   userId: string;
   subject: string;
   message: string;
-  status: 'open' | 'in-progress' | 'closed';
-  priority: 'low' | 'medium' | 'high';
-  createdAt: any; // Firebase Timestamp
-  updatedAt: any; // Firebase Timestamp
+  status: 'OPEN' | 'IN_PROGRESS' | 'CLOSED';
+  priority: 'LOW' | 'MEDIUM' | 'HIGH';
+  isActivate: boolean;
+  createdAt: string; // Firebase Timestamp
+  updatedAt: string; // Firebase Timestamp
+  "messages": TicketMessage[];
 }
 
 export interface TicketMessage {

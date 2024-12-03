@@ -3,6 +3,8 @@ import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import BirthChartAnalysis from "./pages/BirthChartAnalysis";
 import Astrologers from "./pages/Astrologers";
@@ -25,6 +27,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/password-reset" element={<ResetPassword />} />
           <Route
             path="/dashboard"
             element={
@@ -89,7 +93,6 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/dashboard/settings"
             element={

@@ -8,17 +8,17 @@ interface TicketListProps {
 }
 
 const statusConfig = {
-  open: {
+  'OPEN': {
     label: 'Açık',
     icon: Clock,
     className: 'bg-blue-50 text-blue-600',
   },
-  'in-progress': {
+  'IN_PROGRESS': {
     label: 'İşleniyor',
     icon: AlertCircle,
     className: 'bg-yellow-50 text-yellow-600',
   },
-  closed: {
+  'CLOSED': {
     label: 'Çözüldü',
     icon: CheckCircle,
     className: 'bg-green-50 text-green-600',
@@ -26,9 +26,9 @@ const statusConfig = {
 };
 
 const priorityConfig = {
-  low: { label: 'Düşük', className: 'bg-gray-100 text-gray-600' },
-  medium: { label: 'Orta', className: 'bg-yellow-100 text-yellow-600' },
-  high: { label: 'Yüksek', className: 'bg-red-100 text-red-600' },
+  'LOW': { label: 'Düşük', className: 'bg-gray-100 text-gray-600' },
+  'MEDIUM': { label: 'Orta', className: 'bg-yellow-100 text-yellow-600' },
+  'HIGH': { label: 'Yüksek', className: 'bg-red-100 text-red-600' },
 };
 
 export default function TicketList({ tickets, loading }: TicketListProps) {
@@ -46,7 +46,7 @@ export default function TicketList({ tickets, loading }: TicketListProps) {
     );
   }
 
-  if (tickets.length === 0) {
+  if (!tickets|| tickets.length === 0) {
     return (
       <div className="bg-white rounded-2xl p-8 shadow-sm text-center">
         <p className="text-gray-600">Henüz destek talebiniz bulunmuyor.</p>
@@ -60,7 +60,6 @@ export default function TicketList({ tickets, loading }: TicketListProps) {
         const status = statusConfig[ticket.status];
         const StatusIcon = status.icon;
         const priority = priorityConfig[ticket.priority];
-
         return (
           <div
             key={ticket.id}

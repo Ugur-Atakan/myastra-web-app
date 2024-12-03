@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { User, MapPin, Phone, Mail, FileText } from 'lucide-react';
+import { User, MapPin, Phone, Mail } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface DeliveryFormProps {
@@ -19,30 +19,37 @@ export default function DeliveryForm({ initialData, onSubmit }: DeliveryFormProp
   });
 
   const [checked, setChecked] = useState(false);
-
-
+  
   const saveBillingInfo = (data: any) => {
     if (data.saveAddress) {
       localStorage.setItem('billingInfo', JSON.stringify(data.billingInfo));
     }
   }
+  
   const handleCheckBox = () => {
     setChecked(!checked);
   };
 
   useEffect(() => {
-  if(checked) {
-    saveBillingInfo(initialData);
-  } else {
-    localStorage.removeItem('billingInfo');
-  }
-  }
-  , [checked]);
+    if(checked) {
+      saveBillingInfo(initialData);
+    } else {
+      localStorage.removeItem('billingInfo');
+    }
+  }, [checked, initialData]);
 
+  const handleFormSubmit = (data: any) => {
+    // Set default TC Kimlik No if not provided
+    const formData = {
+      ...data,
+      idNumber: '11111111111'
+    };
+    onSubmit(formData);
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-2xl p-6 shadow-sm">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">Teslimat Bilgileri</h2>
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="bg-white rounded-2xl p-6 shadow-sm">
+      <h2 className="text-xl font-semibold text-gray-900 mb-6">Fatura Bilgileri</h2>
       
       <div className="space-y-6">
         <div>
@@ -63,30 +70,9 @@ export default function DeliveryForm({ initialData, onSubmit }: DeliveryFormProp
           )}
         </div>
 
-        <div className="space-y-6">
-        <div className="relative">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-            TC Kimlik No (Fatura için zorunludur)
-          </label>
-            <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <input
-              type="text"
-              {...register('idNumber', { 
-                required: 'T.C. Kimlik No zorunludur',
-                pattern: {
-                  value: /^[0-9]{11}$/,
-                  message:'Geçerli bir TC kimlik numarası giriniz'
-                }
-              })}
-              className="pl-10 w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-EF7874 focus:border-transparent"
-              placeholder={'TC Kimlik No'}
-            />
-        </div>
-          </div>
-
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Teslimat Adresi
+            Fatura Adresi
           </label>
           <div className="relative">
             <MapPin className="absolute left-3 top-3 text-gray-400 h-5 w-5" />
@@ -152,12 +138,11 @@ export default function DeliveryForm({ initialData, onSubmit }: DeliveryFormProp
 
         <div className="flex items-center">
           <input
-             type="checkbox"
-             checked={checked}
-             onChange={handleCheckBox}
+            type="checkbox"
+            checked={checked}
+            onChange={handleCheckBox}
             className="h-4 w-4 text-EF7874 focus:ring-EF7874 border-gray-300 rounded"
           />
-
           <label className="ml-2 block text-sm text-gray-700">
             Bu adresi kaydet
           </label>
@@ -167,7 +152,7 @@ export default function DeliveryForm({ initialData, onSubmit }: DeliveryFormProp
           type="submit"
           className="w-full bg-EF7874 text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-colors"
         >
-         Ödeme Ekranına Geç
+          Ödeme Ekranına Geç
         </button>
       </div>
     </form>

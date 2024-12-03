@@ -1,10 +1,4 @@
 import {baseApi} from '..';
-import {
-  AuthResponse,
-  LoginCredentials,
-  RegisterCredentials,
-} from '../../types/auth';
-
 
 // const loginWitGoogle = async (
 //    idToken: string
@@ -18,25 +12,26 @@ import {
 // };
 
 
-const loginWithEmail = async (
-  data: LoginCredentials,
-): Promise<AuthResponse> => {
+const requestPasswordReset = async (email: string): Promise<void> => {
   try {
-    console.log('data', data);
-    const response = await baseApi.post('/auth/sign-in', data);
-    console.log('response', response);
-    return response.data.result;
+    await baseApi.post('/auth/request-reset-password', { email });
   } catch (error: any) {
     throw error;
   }
 };
 
-const registerWithEmail = async (
-  data: RegisterCredentials,
-): Promise<AuthResponse> => {
+const verifyResetToken = async (token: string): Promise<{ email: string }> => {
   try {
-    const resposne = await baseApi.post('/auth/sign-up', data);
-    return resposne.data.result;
+    const response = await baseApi.post('/auth/verify-reset-token', { token });
+    return response.data;
+  } catch (error: any) {
+    throw error;
+  }
+};
+
+const resetPassword = async (token: string, password: string): Promise<void> => {
+  try {
+    await baseApi.post('/auth/reset-password', { token, password });
   } catch (error: any) {
     throw error;
   }
@@ -53,8 +48,9 @@ const forgotPassword = async (email: string): Promise<string> => {
 };
 
 export {
-  loginWithEmail,
-  registerWithEmail,
   forgotPassword,
-  //loginWitGoogle,
+  requestPasswordReset,
+  verifyResetToken,
+  resetPassword,
+
 };

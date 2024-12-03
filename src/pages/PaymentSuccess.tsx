@@ -1,9 +1,22 @@
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, FileText, Home } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 
 export default function PaymentSuccess() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const orderId = searchParams.get('orderId');
+ const total_amount = searchParams.get('total_amount');
+  
+ const amountToCurrency = (amount: string) => {
+    return new Intl.NumberFormat('tr-TR', {
+      style: 'currency',
+      currency: 'TRY',
+    }).format(Number(amount));
+  }
 
+  console.log('Order ID:', orderId);
+  console.log('Total Amount:', total_amount);
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center">
@@ -28,11 +41,11 @@ export default function PaymentSuccess() {
           <div className="space-y-4 text-left">
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Sipariş Numarası</span>
-              <span className="font-medium">TR-2024-123456</span>
+              <span className="font-medium">{orderId}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Tutar</span>
-              <span className="font-medium">299.00₺</span>
+              <span className="font-medium">{amountToCurrency(total_amount!)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Tarih</span>

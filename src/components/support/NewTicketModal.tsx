@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import toast from 'react-hot-toast';
+import instance from '../../http/instance';
 
 interface NewTicketModalProps {
   isOpen: boolean;
@@ -10,22 +11,30 @@ interface NewTicketModalProps {
 export default function NewTicketModal({ isOpen, onClose }: NewTicketModalProps) {
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
-  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('low');
+  const [priority, setPriority] = useState<'LOW' | 'MEDIUM' | 'HIGH'>('LOW');
   const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   
     setLoading(true);
     try {
        // Ticket System
+     const ticket= await instance.post('/support/create-ticket', {
+        subject,
+        message,
+        priority,
+      });
+      if (ticket.status === 200) {
+        toast.success('Destek talebiniz oluşturuldu');
+      }
       toast.success('Destek talebiniz oluşturuldu');
       onClose();
       setSubject('');
       setMessage('');
-      setPriority('low');
+      setPriority('LOW');
     } catch (error) {
       toast.error('Bir hata oluştu');
     } finally {
@@ -66,12 +75,12 @@ export default function NewTicketModal({ isOpen, onClose }: NewTicketModalProps)
             </label>
             <select
               value={priority}
-              onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
+              onChange={(e) => setPriority(e.target.value as 'LOW' | 'MEDIUM' | 'HIGH')}
               className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-EF7874 focus:border-transparent"
             >
-              <option value="low">Düşük</option>
-              <option value="medium">Orta</option>
-              <option value="high">Yüksek</option>
+              <option value="LOW">Düşük</option>
+              <option value="MEDIUM">Orta</option>
+              <option value="HIGH">Yüksek</option>
             </select>
           </div>
 

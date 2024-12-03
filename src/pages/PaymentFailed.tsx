@@ -1,9 +1,10 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { XCircle, RefreshCw, ArrowLeft } from 'lucide-react';
 
 export default function PaymentFailed() {
   const navigate = useNavigate();
-
+  const [searchParams] = useSearchParams();
+  const orderId = searchParams.get('orderId');
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center">

@@ -4,6 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import { ArrowLeft, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
 import type { Ticket, TicketMessage } from '../types/ticket';
+import instance from '../http/instance';
 
 export default function TicketDetail() {
   const { ticketId } = useParams();
@@ -16,6 +17,17 @@ export default function TicketDetail() {
   useEffect(() => {
     // Fetch ticket details
     const fetchTicket = async () => {
+      try {
+        // Ticket System
+        const response = await instance.get(`/support/ticket/${ticketId}`);
+        const data = response.data;
+        setTicket(data);
+        setMessages(data.messages);
+      } catch (error) {
+        toast.error('Talep detayları alınamadı');
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchTicket();
@@ -24,9 +36,10 @@ export default function TicketDetail() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
-     
+     await instance.post(`/support/add-message-to-ticket`, {tickedId:ticketId, message: newMessage });
+      toast.success('Mesaj gönderildi');
+      
       setNewMessage('');
     } catch (error) {
       toast.error('Mesaj gönderilemedi');

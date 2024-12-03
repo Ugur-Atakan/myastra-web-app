@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import AccessDenied from './AccessDenied';
@@ -22,17 +22,19 @@ export default function ProtectedRoute({ children, requiredRoles }: ProtectedRou
   // `getUserTokens` çıktısını bir kez hesaplayarak referansı sabit tut
   const tokens = useMemo(() => getUserTokens(), []);
 
+  const navigate = useNavigate();
   const getUserData = async () => {
     try {
       const response = await instance.post('/user/me');
       console.log('User data fetched:', response.data); 
       dispatch(setUserData(response.data));
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error.message || 'An unexpected error occurred.';
-      console.error('Failed to get user data:', errorMessage);
-      toast.error(`Failed to get user data: ${errorMessage}`);
       removeTokens();
       dispatch(logOut());
+   
+      const errorMessage = error?.response?.data?.message || error.message || 'An unexpected error occurred.';
+      toast.error(`Failed to get user data: ${errorMessage}`);
+      navigate('/login');
     }
   };
 

@@ -3,11 +3,10 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import TicketList from '../components/support/TicketList';
 import NewTicketModal from '../components/support/NewTicketModal';
 import { Plus } from 'lucide-react';
-import type { Ticket } from '../types/ticket';
 import instance from '../http/instance';
 
 export default function Support() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [userTickets, setUserTickets] = useState([]);
   const [isNewTicketModalOpen, setIsNewTicketModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -16,11 +15,11 @@ export default function Support() {
     const fetchData = async () => {
       try {
         const response = await instance.get('/support/my-tickets');
-        const ticketsData = Array.isArray(response.data) ? response.data : [];
-        setTickets(ticketsData);  
+        const ticketsData = response.data;
+        console.log('ticketsData', ticketsData);
+        setUserTickets(ticketsData);
       } catch (error) {
         console.error('Veriler yüklenirken bir hata oluştu:', error);
-        setTickets([]);
       } finally {
         setLoading(false);
       }
@@ -63,7 +62,7 @@ export default function Support() {
         </div>
 
         {/* Tickets List */}
-        <TicketList tickets={tickets} loading={loading} />
+        <TicketList tickets={userTickets} loading={loading} />
 
         {/* New Ticket Modal */}
         <NewTicketModal

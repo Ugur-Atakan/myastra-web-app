@@ -6,15 +6,16 @@ interface CheckoutProgressProps {
 
 export default function CheckoutProgress({ currentStep }: CheckoutProgressProps) {
   const steps = [
-    { number: 1, label: 'Teslimat Bilgileri' },
+    { number: 1, label: 'Fatura Bilgileri' },
     { number: 2, label: 'Ödeme' },
+    { number: 3, label: 'Sipariş Onayı' }
   ];
 
   return (
     <div className="relative">
       <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-200 -translate-y-1/2" />
       
-      <div className="relative flex justify-between">
+      <div className="relative flex justify-between max-w-3xl mx-auto px-8">
         {steps.map((step) => {
           const isCompleted = currentStep > step.number;
           const isCurrent = currentStep === step.number;
