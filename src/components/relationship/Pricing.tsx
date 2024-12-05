@@ -6,10 +6,12 @@ import { Package } from '../../types/report';
 import instance from '../../http/instance';
 import { selectPackage } from '../../store/slices/marketSlice';
 import NoPackageComponent from '../common/NoPackage';
-
+import PartnerInfoForm from './PartnerInfos';
 
 export default function Pricing() {
   const navigate = useNavigate();
+  const [showPartnerInfoForm, setShowPartnerInfoForm] = useState(false);
+
 
   const [relationshipPackages, setRelationshipPackages] = useState<Package[] | null>([]);
   const dispatch = useAppDispatch();
@@ -28,11 +30,15 @@ export default function Pricing() {
     getPackages();
   }, []);
 
+  const handlePartnerInfo = () => {
+    setShowPartnerInfoForm(true);
+  }
 
   const handlePurchase = (pkg: Package) => {
     console.log("Selected package:", pkg);
+    handlePartnerInfo();
     dispatch(selectPackage(pkg));
-    navigate("/checkout");
+   
   };
   return (
     <div>
@@ -78,6 +84,8 @@ export default function Pricing() {
           ))
         )}
       </div>
+      <PartnerInfoForm isOpen={showPartnerInfoForm} onClose={()=>setShowPartnerInfoForm(false)} />
     </div>
+
   );
 }

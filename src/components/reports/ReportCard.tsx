@@ -7,9 +7,24 @@ interface ReportCardProps {
   report: UserReport;
 }
 
+const formatOrderStatus= (status:string ) => {
+  switch (status) {
+    case 'COMPLETED':
+      return 'Hazır';
+    case 'IN_PROGRESS':
+      return 'Hazırlanıyor';
+    case 'REJECTED':
+      return 'Reddedildi';
+    case 'CANCELLED':
+      return 'İptal Edildi';
+    default:
+      return 'Hazırlanıyor';
+  }
+}
+
 export default function ReportCard({ report }: ReportCardProps) {
   const formatDate = (date: any) => {
-    return new Date(date.toDate()).toLocaleDateString('tr-TR', {
+    return new Date(date).toLocaleDateString('tr-TR', {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
@@ -31,17 +46,17 @@ export default function ReportCard({ report }: ReportCardProps) {
           </div>
         </div>
         <div className={`px-3 py-1 rounded-full text-sm ${
-          report.status === 'completed' 
+          report.status === 'COMPLETED' 
             ? 'bg-green-100 text-green-600' 
             : 'bg-yellow-100 text-yellow-600'
         }`}>
-          {report.status === 'completed' ? 'Hazır' : 'Hazırlanıyor'}
+          { formatOrderStatus(report.status)}
         </div>
       </div>
 
       <p className="text-gray-600 text-sm mb-6">{report.packageDescription}</p>
 
-      {report.status === 'completed' ? (
+      {report.status === 'COMPLETED' ? (
         <a
           href={report.documentLink}
           target="_blank"

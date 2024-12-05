@@ -23,6 +23,7 @@ export default function Checkout() {
 
   const [paymentLink, setPaymentLink] = useState<string | null>(null);
 
+  
   useEffect(() => {
     if (selectedPackageId) {
       setDeliveryData((prevData) => ({
@@ -40,7 +41,8 @@ export default function Checkout() {
       const response = await instance.post("/checkout/buy", {
         packageId: selectedPackageId,
         billingInfo: data,
-        couponCode: appliedCoupon?.code || null
+        couponCode: appliedCoupon?.code || null,
+        partnerInfo: partnerInfo,
       });
       setPaymentLink(response.data);
       setCurrentStep(2);

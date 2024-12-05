@@ -46,13 +46,11 @@ export default function PartnerInfoForm({ isOpen, onClose }: PartnerInfoFormProp
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
     if (!value) {
       toast.error('Lütfen doğum yerini seçin');
       return;
     }
     setLoading(true);
-
     try {
       const results = await getGeocode({ address: value });
       const { lat:latitude, lng:longitude } = await getLatLng(results[0]);
@@ -74,6 +72,7 @@ export default function PartnerInfoForm({ isOpen, onClose }: PartnerInfoFormProp
       }
       console.table(payload);
       dispatch(setPartnerInfo(payload));
+      navigate("/checkout");
     } catch (error) {
       console.error('Error:', error);
       toast.error('Bilgiler kaydedilirken bir hata oluştu');
