@@ -1,17 +1,10 @@
 import { FileText, Clock, Download } from 'lucide-react';
+import { UserReport } from '../../types/report';
 
 
-interface Report {
-  id: string;
-  createdAt: any;
-  title: string;
-  description: string;
-  status: 'processing' | 'completed';
-  pdfUrl?: string;
-}
 
 interface ReportCardProps {
-  report: Report;
+  report: UserReport;
 }
 
 export default function ReportCard({ report }: ReportCardProps) {
@@ -31,7 +24,7 @@ export default function ReportCard({ report }: ReportCardProps) {
             <FileText className="h-6 w-6 text-EF7874" />
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900">{report.title}</h3>
+            <h3 className="font-semibold text-gray-900">{report.packageName}</h3>
             <p className="text-sm text-gray-500">
               {formatDate(report.createdAt)}
             </p>
@@ -46,11 +39,11 @@ export default function ReportCard({ report }: ReportCardProps) {
         </div>
       </div>
 
-      <p className="text-gray-600 text-sm mb-6">{report.description}</p>
+      <p className="text-gray-600 text-sm mb-6">{report.packageDescription}</p>
 
       {report.status === 'completed' ? (
         <a
-          href={report.pdfUrl}
+          href={report.documentLink}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 w-full bg-EF7874 text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors"

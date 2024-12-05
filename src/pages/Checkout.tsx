@@ -11,6 +11,8 @@ export default function Checkout() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showPayment, setShowPayment] = useState(false);
   const selectedPackageId = useAppSelector((state) => state.market.selectedPackage?.id);
+  const appliedCoupon = useAppSelector((state) => state.market.appliedCoupon);
+  const partnerInfo = useAppSelector((state) => state.market.partnerInfo);
   const [deliveryData, setDeliveryData] = useState<BuyPackageRequest['billingInfo']>({
       fullName: "",
       idNumber: "",
@@ -28,16 +30,17 @@ export default function Checkout() {
         packageId: selectedPackageId,
       }));
     }
-    console.log('Selected package id',selectedPackageId);
+    console.log('Selected package id', selectedPackageId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleDeliverySubmit = async (data:BuyPackageRequest['billingInfo']) => {
+  const handleDeliverySubmit = async (data: BuyPackageRequest['billingInfo']) => {
     try {
       setDeliveryData(data);
-      const response = await instance.post("/market/buy", {
+      const response = await instance.post("/checkout/buy", {
         packageId: selectedPackageId,
         billingInfo: data,
+        couponCode: appliedCoupon?.code || null
       });
       setPaymentLink(response.data);
       setCurrentStep(2);
@@ -51,7 +54,6 @@ export default function Checkout() {
     <DashboardLayout>
       <div className="max-w-6xl mx-auto px-4 py-8">
         <CheckoutProgress currentStep={currentStep} />
-
 
         {showPayment && paymentLink && (
           <div className="mt-8">
@@ -77,8 +79,7 @@ export default function Checkout() {
             )}
           </div>
           <div className="lg:col-span-1">
-            <OrderSummary
-            />
+            <OrderSummary />
           </div>
         </div>
       </div>

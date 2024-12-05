@@ -12,6 +12,22 @@ export interface BirthChart {
   };
   createdAt: any; // Firebase Timestamp
 }
+
+
+export interface PartnerInfo {
+  birthYear: number
+  birthMonth: number
+  birthDay: number
+  birthHour: number
+  birthMinute: number
+  latitude: number
+  longitude: number
+  city: string
+  timezone: string
+  name: string
+  gender:"MALE"|"FEMALE"|"OTHER"
+}
+
 export interface BuyPackageRequest {
   packageId: string;
   billingInfo: {
@@ -21,9 +37,9 @@ export interface BuyPackageRequest {
     phone: string;
     email: string;
   };
+  partnerInfo:PartnerInfo
+  couponCode?: string | null;
 }
-
-
 
 export interface BirthChartUpdateRequest {
   birthYear: number
@@ -36,3 +52,5 @@ export interface BirthChartUpdateRequest {
   city: string
   timezone: string
 }
+
+

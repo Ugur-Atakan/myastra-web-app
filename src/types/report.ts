@@ -21,3 +21,23 @@ export interface Package{
     deletedAt: string | null;
     isActivate: boolean;
   }
+
+
+  export interface UserReport {
+    id: string;
+    type: string;
+    status: string;
+    merchant_oid: string;
+    createdAt: Date;
+    meetLink: string;
+    meetingDate: Date;
+    documentLink: string;
+    packageName: string;
+    originalPrice: number;
+    discountPrice: number;
+    finalPrice: number;
+    completedAt: Date;
+    packageDescription: string;
+    packageImage: string;
+    packageId: string;
+  }

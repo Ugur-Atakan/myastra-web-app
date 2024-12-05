@@ -1,8 +1,12 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import { Package } from '../../types/report';
+import { Coupon } from '../../types/coupon';
+import { PartnerInfo } from '../../types/birthChart';
 
 interface MarketState {
   selectedPackage: Package | null;
+  appliedCoupon: Coupon | null;
+  partnerInfo: PartnerInfo | null;
   billingInfo: {
     idNumber: string;
     fullName: string;
@@ -14,6 +18,8 @@ interface MarketState {
 
 const initialState: MarketState = {
     selectedPackage: null,
+    appliedCoupon: null,
+    partnerInfo: null,
     billingInfo: {
         idNumber: '',
         fullName: '',
@@ -21,6 +27,7 @@ const initialState: MarketState = {
         phone: '',
         email: '',
     },
+
 };
 
 export const marketSlice = createSlice({
@@ -33,8 +40,14 @@ export const marketSlice = createSlice({
     setBillingInfo: (state, action: PayloadAction<MarketState['billingInfo']>) => {
       state.billingInfo = action.payload;
     },
+    applyCoupon: (state, action: PayloadAction<Coupon | null>) => {
+      state.appliedCoupon = action.payload;
+    },
+    setPartnerInfo: (state, action: PayloadAction<PartnerInfo>) => {
+      state.partnerInfo = action.payload;
+    }
   },
 });
-export const {selectPackage, setBillingInfo} = marketSlice.actions;
+export const {selectPackage, setBillingInfo, applyCoupon,setPartnerInfo} = marketSlice.actions;
 export const marketActions = marketSlice.actions;
 export default marketSlice.reducer;

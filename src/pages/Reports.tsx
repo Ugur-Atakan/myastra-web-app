@@ -3,49 +3,30 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import ReportCard from '../components/reports/ReportCard';
 import { FileText } from 'lucide-react';
 import instance from '../http/instance';
+import { UserReport } from '../types/report';
+import toast from 'react-hot-toast';
 
-interface Report {
-  id: string;
-  createdAt: string;
-  title: string;
-  description: string;
-  status: 'processing' | 'completed';
-  pdfUrl?: string;
-}
-
-interface Order {
-  id: string | number;
-  // diğer gerekli alanlar...
-}
 
 export default function Reports() {
-  const [reports, setReports] = useState<Report[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [reports, setReports] = useState<UserReport[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [reportsResponse, ordersResponse] = await Promise.all([
-          instance.get('/user/my-reports'),
-          instance.get('/user/my-orders')
-        ]);
-        
-        const reportsData =reportsResponse.data ;
-        const ordersData = ordersResponse.data;
+        const reportsResponse = await instance.get('/user/my-reports');
+   
+        const reportsData =reportsResponse.data;
         console.log('Raporlar:', reportsData);
-        console.log('Siparişler:', ordersData);
         setReports(reportsData);
-        setOrders(ordersData);
       } catch (error) {
         console.error('Veriler yüklenirken bir hata oluştu:', error);
-        setReports([]);
-        setOrders([]);
+        toast.error('Raporlar yüklenirken bir hata oluştu');
+        setLoading(false);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
