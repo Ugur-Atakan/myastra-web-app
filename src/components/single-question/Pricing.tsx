@@ -46,8 +46,8 @@ const dispatch = useAppDispatch();
       </div>
 {!horaryPackages|| horaryPackages.length < 0 ? (
      <NoPackageComponent />
-    ):(horaryPackages?.map((pkg) => (
-      <div className="max-w-lg mx-auto">
+    ):(horaryPackages?.map((pkg,index) => (
+      <div className="max-w-lg mx-auto" key={index}>
             <div className="bg-FDEAE9 rounded-xl p-8 text-center mb-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Tek Soru Astrolojisi</h3>
               <div className="text-4xl font-bold text-EF7874 mb-6">299₺</div>

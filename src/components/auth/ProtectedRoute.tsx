@@ -33,8 +33,8 @@ export default function ProtectedRoute({ children, requiredRoles }: ProtectedRou
       dispatch(logOut());
    
       const errorMessage = error?.response?.data?.message || error.message || 'An unexpected error occurred.';
-      toast.error(`Failed to get user data: ${errorMessage}`);
-      navigate('/login');
+      toast.error("Kullanıcı bilgileri alınamadı. Lütfen tekrar giriş yapın.");
+      navigate('/');
     }
   };
 

@@ -12,6 +12,7 @@ export default function HeroSection() {
 
 
   const handleAction = () => {
+    console.log('Clicked') 
     navigate('/dashboard/birth-chart');
   }
   return (

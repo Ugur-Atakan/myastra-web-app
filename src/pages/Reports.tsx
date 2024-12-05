@@ -31,8 +31,8 @@ export default function Reports() {
           instance.get('/user/my-orders')
         ]);
         
-        const reportsData = Array.isArray(reportsResponse.data) ? reportsResponse.data : [];
-        const ordersData = Array.isArray(ordersResponse.data) ? ordersResponse.data : [];
+        const reportsData =reportsResponse.data ;
+        const ordersData = ordersResponse.data;
         console.log('Raporlar:', reportsData);
         console.log('Siparişler:', ordersData);
         setReports(reportsData);
