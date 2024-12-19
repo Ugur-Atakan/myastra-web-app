@@ -20,6 +20,7 @@ export interface Package{
     createdAt: string;
     deletedAt: string | null;
     isActivate: boolean;
+    packageType: string;
   }
 
 

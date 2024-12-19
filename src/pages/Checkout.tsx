@@ -1,48 +1,53 @@
-import { useEffect, useState } from "react";
-import DashboardLayout from "../components/layout/DashboardLayout";
-import DeliveryForm from "../components/checkout/DeliveryForm";
-import OrderSummary from "../components/checkout/OrderSummary";
-import CheckoutProgress from "../components/checkout/CheckoutProgress";
-import { BuyPackageRequest } from "../types/birthChart";
-import { useAppSelector } from "../store/hooks";
-import instance from "../http/instance";
+import { useState, useEffect } from 'react';
+import DashboardLayout from '../components/layout/DashboardLayout';
+import DeliveryForm from '../components/checkout/DeliveryForm';
+import OrderSummary from '../components/checkout/OrderSummary';
+import CheckoutProgress from '../components/checkout/CheckoutProgress';
+import PersonSelector from '../components/checkout/PersonSelector';
+import RelationshipPersonSelector from '../components/relationship/RelationshipPersonSelector';
+import { BuyPackageRequest } from '../types/birthChart';
+import { useAppSelector } from '../store/hooks';
+import instance from '../http/instance';
+import { PartnerInfoDto } from '../types/partner';
 
 export default function Checkout() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showPayment, setShowPayment] = useState(false);
-  const selectedPackageId = useAppSelector((state) => state.market.selectedPackage?.id);
+  const [selectedPerson, setSelectedPerson] = useState<PartnerInfoDto | null>(null);
+  const selectedPackage = useAppSelector((state) => state.market.selectedPackage);
   const appliedCoupon = useAppSelector((state) => state.market.appliedCoupon);
-  const partnerInfo = useAppSelector((state) => state.market.partnerInfo);
   const [deliveryData, setDeliveryData] = useState<BuyPackageRequest['billingInfo']>({
-      fullName: "",
-      idNumber: "",
-      address: "",
-      phone: "",
-      email: "",
+    fullName: "",
+    idNumber: "",
+    address: "",
+    phone: "",
+    email: "",
   });
 
   const [paymentLink, setPaymentLink] = useState<string | null>(null);
 
-  
   useEffect(() => {
-    if (selectedPackageId) {
+    if (selectedPackage?.id) {
       setDeliveryData((prevData) => ({
         ...prevData,
-        packageId: selectedPackageId,
+        packageId: selectedPackage.id,
       }));
     }
-    console.log('Selected package id', selectedPackageId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedPackage?.id]);
+
+  // Add scroll to top effect when step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentStep]);
 
   const handleDeliverySubmit = async (data: BuyPackageRequest['billingInfo']) => {
     try {
       setDeliveryData(data);
       const response = await instance.post("/checkout/buy", {
-        packageId: selectedPackageId,
+        packageId: selectedPackage?.id,
         billingInfo: data,
         couponCode: appliedCoupon?.code || null,
-        partnerInfo: partnerInfo,
+        partnerInfo: selectedPerson,
       });
       setPaymentLink(response.data);
       setCurrentStep(2);
@@ -51,6 +56,8 @@ export default function Checkout() {
       console.error("Ödeme sayfası yüklenirken bir hata oluştu:", error);
     }
   };
+
+  const isRelationshipPackage = selectedPackage?.packageType === 'SYNASTRY';
 
   return (
     <DashboardLayout>
@@ -72,17 +79,32 @@ export default function Checkout() {
         )}
 
         <div className="mt-8 grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
+          <div className={`${currentStep === 1 ? 'lg:col-span-2' : 'lg:col-span-3'} space-y-8`}>
             {currentStep === 1 && (
-              <DeliveryForm
-                initialData={deliveryData}
-                onSubmit={handleDeliverySubmit}
-              />
+              <>
+                {isRelationshipPackage ? (
+                  <RelationshipPersonSelector
+                    selectedPerson={selectedPerson}
+                    onSelect={setSelectedPerson}
+                  />
+                ) : (
+                  <PersonSelector
+                    selectedPerson={selectedPerson}
+                    onSelect={setSelectedPerson}
+                  />
+                )}
+                <DeliveryForm
+                  initialData={deliveryData}
+                  onSubmit={handleDeliverySubmit}
+                />
+              </>
             )}
           </div>
-          <div className="lg:col-span-1">
-            <OrderSummary />
-          </div>
+          {currentStep === 1 && (
+            <div className="lg:col-span-1">
+              <OrderSummary />
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>

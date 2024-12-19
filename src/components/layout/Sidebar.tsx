@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logOut } from '../../store/slices/userSlice';
-import { LayoutDashboard, Activity, Users, HelpCircle, Settings, X, MessageSquare, Heart, LogOut, FileText } from 'lucide-react';
+import { LayoutDashboard, Sparkles, Users, HelpCircle, Settings, X, MessageSquare, Heart, LogOut, FileText, UserPlus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { removeTokens } from '../../utils/storage';
 
@@ -11,14 +11,17 @@ interface SidebarProps {
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Ana Sayfa', path: '/dashboard' },
-  { icon: Activity, label: 'Doğum Haritası', path: '/dashboard/birth-chart' },
-  { icon: MessageSquare, label: 'Tek Soru Astrolojisi', path: '/dashboard/single-question' },
+  { icon: Sparkles, label: 'Doğum Haritası', path: '/dashboard/birth-chart' },
+ // { icon: MessageSquare, label: 'Tek Soru Astrolojisi', path: '/dashboard/single-question' },
   { icon: Heart, label: 'İlişki Analizi', path: '/dashboard/relationship' },
-  { icon: Users, label: 'Astrologlar', path: '/dashboard/astrologers' },
+ // { icon: Users, label: 'Astrologlar', path: '/dashboard/astrologers' },
+  { icon: UserPlus, label: 'Kişilerim', path: '/dashboard/my-people' },
   { icon: FileText, label: 'Raporlarım', path: '/dashboard/reports' },
   { icon: HelpCircle, label: 'Destek', path: '/dashboard/support' },
   { icon: Settings, label: 'Ayarlar', path: '/dashboard/settings' },
 ];
+
+// Rest of the file remains the same...
 
 export default function Sidebar({ onClose }: SidebarProps) {
   const location = useLocation();

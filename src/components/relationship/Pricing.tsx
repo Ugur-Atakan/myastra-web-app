@@ -10,7 +10,6 @@ import PartnerInfoForm from './PartnerInfos';
 
 export default function Pricing() {
   const navigate = useNavigate();
-  const [showPartnerInfoForm, setShowPartnerInfoForm] = useState(false);
 
 
   const [relationshipPackages, setRelationshipPackages] = useState<Package[] | null>([]);
@@ -30,14 +29,10 @@ export default function Pricing() {
     getPackages();
   }, []);
 
-  const handlePartnerInfo = () => {
-    setShowPartnerInfoForm(true);
-  }
 
   const handlePurchase = (pkg: Package) => {
-    console.log("Selected package:", pkg);
-    handlePartnerInfo();
     dispatch(selectPackage(pkg));
+    navigate("/checkout")
    
   };
   return (
@@ -84,7 +79,7 @@ export default function Pricing() {
           ))
         )}
       </div>
-      <PartnerInfoForm isOpen={showPartnerInfoForm} onClose={()=>setShowPartnerInfoForm(false)} />
+     
     </div>
 
   );

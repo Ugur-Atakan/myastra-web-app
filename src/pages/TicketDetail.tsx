@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { ArrowLeft, Send } from 'lucide-react';
@@ -13,12 +13,11 @@ export default function TicketDetail() {
   const [messages, setMessages] = useState<TicketMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Fetch ticket details
     const fetchTicket = async () => {
       try {
-        // Ticket System
         const response = await instance.get(`/support/ticket/${ticketId}`);
         const data = response.data;
         setTicket(data);
@@ -31,15 +30,38 @@ export default function TicketDetail() {
     };
 
     fetchTicket();
-
   }, [ticketId]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if message is too short (excluding spaces)
+    if (newMessage.trim().length < 10) {
+      toast.error('Mesajınız en az 10 karakter olmalıdır');
+      return;
+    }
+
     try {
-     await instance.post(`/support/add-message-to-ticket`, {tickedId:ticketId, message: newMessage });
-      toast.success('Mesaj gönderildi');
+      await instance.post(`/support/add-message-to-ticket`, {
+        tickedId: ticketId,
+        message: newMessage
+      });
       
+      // Add the new message to the messages array
+      setMessages([...messages, {
+        id: Date.now().toString(),
+        ticketId: ticketId!,
+        userId: 'current-user',
+        message: newMessage,
+        isStaff: false,
+        createdAt: new Date()
+      }]);
+      
+      toast.success('Mesaj gönderildi');
       setNewMessage('');
     } catch (error) {
       toast.error('Mesaj gönderilemedi');
@@ -87,23 +109,26 @@ export default function TicketDetail() {
 
         {/* Messages */}
         <div className="bg-white rounded-2xl shadow-sm mb-6">
-          <div className="p-6 space-y-6">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.isStaff ? 'justify-start' : 'justify-end'}`}
-              >
+          <div className="p-6 h-[500px] overflow-y-auto">
+            <div className="space-y-6">
+              {messages.map((message) => (
                 <div
-                  className={`max-w-[80%] rounded-2xl p-4 ${
-                    message.isStaff
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'bg-FDEAE9 text-gray-900'
-                  }`}
+                  key={message.id}
+                  className={`flex ${message.isStaff ? 'justify-start' : 'justify-end'}`}
                 >
-                  <p>{message.message}</p>
+                  <div
+                    className={`max-w-[80%] rounded-2xl p-4 ${
+                      message.isStaff
+                        ? 'bg-gray-100 text-gray-900'
+                        : 'bg-FDEAE9 text-gray-900'
+                    }`}
+                  >
+                    <p>{message.message}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
           </div>
 
           {/* Reply Form */}
@@ -112,7 +137,7 @@ export default function TicketDetail() {
               <textarea
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Mesajınızı yazın..."
+                placeholder="Mesajınızı yazın... (en az 10 karakter)"
                 className="w-full pl-4 pr-12 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-EF7874 focus:border-transparent resize-none"
                 rows={3}
               />
