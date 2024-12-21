@@ -1,45 +1,55 @@
 import { useForm } from 'react-hook-form';
 import { User, MapPin, Phone, Mail } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import instance from '../../http/instance';
+import toast from 'react-hot-toast';
 
 interface DeliveryFormProps {
   initialData: {
-      fullName: string;
-      idNumber: string;
-      address: string;
-      phone: string;
-      email: string
+    fullName: string;
+    idNumber: string;
+    address: string;
+    phone: string;
+    email: string;
   };
   onSubmit: (data: any) => void;
 }
 
 export default function DeliveryForm({ initialData, onSubmit }: DeliveryFormProps) {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm({
     defaultValues: initialData
   });
 
-  const [checked, setChecked] = useState(false);
+  const [saveAddress, setSaveAddress] = useState(false);
   
-  const saveBillingInfo = (data: any) => {
-    if (data.saveAddress) {
-      localStorage.setItem('billingInfo', JSON.stringify(data.billingInfo));
-    }
-  }
-  
-  const handleCheckBox = () => {
-    setChecked(!checked);
-  };
-
   useEffect(() => {
-    if(checked) {
-      saveBillingInfo(initialData);
-    } else {
-      localStorage.removeItem('billingInfo');
+    // Load saved billing info from localStorage if exists
+    const savedBillingInfo = localStorage.getItem('billingInfo');
+    if (savedBillingInfo) {
+      const parsedInfo = JSON.parse(savedBillingInfo);
+      Object.keys(parsedInfo).forEach(key => {
+        setValue(key, parsedInfo[key]);
+      });
     }
-  }, [checked, initialData]);
+  }, [setValue]);
 
-  const handleFormSubmit = (data: any) => {
-    // Set default TC Kimlik No if not provided
+  const handleFormSubmit = async (data: any) => {
+    if (saveAddress) {
+      try {
+        await instance.post('/user/update-me', {
+          billingInfo: {
+            fullName: data.fullName,
+            address: data.address,
+            phone: data.phone,
+            email: data.email
+          }
+        });
+        localStorage.setItem('billingInfo', JSON.stringify(data));
+        toast.success('Fatura bilgileri kaydedildi');
+      } catch (error) {
+        toast.error('Fatura bilgileri kaydedilemedi');
+      }
+    }
     const formData = {
       ...data,
       idNumber: '11111111111'
@@ -139,8 +149,8 @@ export default function DeliveryForm({ initialData, onSubmit }: DeliveryFormProp
         <div className="flex items-center">
           <input
             type="checkbox"
-            checked={checked}
-            onChange={handleCheckBox}
+            checked={saveAddress}
+            onChange={() => setSaveAddress(!saveAddress)}
             className="h-4 w-4 text-EF7874 focus:ring-EF7874 border-gray-300 rounded"
           />
           <label className="ml-2 block text-sm text-gray-700">

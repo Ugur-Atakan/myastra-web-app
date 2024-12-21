@@ -11,34 +11,30 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="min-h-screen flex bg-gray-50">
-      {/* Mobile menu button */}
-      <button
-       
-        className="lg:hidden fixed bottom-4 left-0 right-0 left-4 z-50 p-2 rounded-lg bg-white shadow-sm"
-      >
-                    {/* Bottom Tabs */}
-          <BottomTabs  openSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-      </button>
+      {/* Mobile Bottom Navigation */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40">
+        <BottomTabs openSidebar={() => setIsSidebarOpen(true)} />
+      </div>
 
       {/* Overlay for mobile */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <div
-        className={`${
+        className={`fixed lg:sticky top-0 left-0 h-screen w-[280px] transform transition-transform duration-300 ease-in-out z-50 ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 transition-transform duration-200 ease-in-out fixed lg:sticky top-0 left-0 z-40 h-screen overflow-y-auto`}
+        } lg:translate-x-0`}
       >
         <Sidebar onClose={() => setIsSidebarOpen(false)} />
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col min-h-screen">
+      <div className="flex-1 flex flex-col min-h-screen pb-16 lg:pb-0">
         <main className="flex-1 p-4 lg:p-8 overflow-auto">
           {children}
         </main>

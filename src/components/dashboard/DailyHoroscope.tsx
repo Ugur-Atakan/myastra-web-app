@@ -1,50 +1,47 @@
-import { Activity, Briefcase, CalendarRange, Heart, Sparkles } from 'lucide-react';
-import instance from '../../http/instance';
+import { Activity, Briefcase, CalendarRange, Heart } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import instance from '../../http/instance';
+import { DailyHoroscope as DailyHoroscopeType } from '../../types/horoscope';
+import { DailyHoroscopeSkeleton } from './DailyHoroscopeSkeleton';
 
-interface DailyHoroscope {
-  sign: string;
-  date: string;
-  horoscope: string;
-  love: string;
-  career: string;
-  health: string;
+interface DailyHoroscopeProps {
+  sunSign: string;
 }
 
-export default function DailyHoroscope({sunSign}: {sunSign: string}) {
-  const [dailyHoroscope, setDailyHoroscope] = useState<DailyHoroscope>();
+export default function DailyHoroscope({ sunSign }: DailyHoroscopeProps) {
+  const [dailyHoroscope, setDailyHoroscope] = useState<DailyHoroscopeType | null>(null);
   const [loading, setLoading] = useState(true);
-
-
-  const getDailyHoroscope = async() => {
-    setLoading(true);
-   const res= await instance.get(`/astrology/get-daily-by-sign/${sunSign}`);
-    const dailyHoroscope= res.data[0];
-    console.log("dailyHoroscope",dailyHoroscope); 
-    setDailyHoroscope(dailyHoroscope);
-    setLoading(false);
-  }
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getDailyHoroscope();
-  }
-  , []);  
+    const getDailyHoroscope = async () => {
+      if (!sunSign) {
+        setError('Burç bilgisi bulunamadı');
+        setLoading(false);
+        return;
+      }
 
-  if(loading){
+      try {
+        const response = await instance.get(`/horoscope/daily/${sunSign}`);
+        setDailyHoroscope(response.data);
+      } catch (error) {
+        setError('Günlük burç yorumu yüklenirken bir hata oluştu');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getDailyHoroscope();
+  }, [sunSign]);
+
+  if (loading) {
+    return <DailyHoroscopeSkeleton />;
+  }
+
+  if (error || !dailyHoroscope) {
     return (
       <div className="bg-white rounded-2xl p-6 shadow-sm">
-        <div className="flex items-start justify-between mb-6">
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900">Bugün Sizi Neler Bekliyor?</h2>
-          </div>
-          <Sparkles className="h-6 w-6 text-EF7874" />
-        </div>
-        <div className="animate-pulse space-y-4">
-          <div className="h-6 bg-gray-100 rounded-lg" />
-          <div className="h-6 bg-gray-100 rounded-lg" />
-          <div className="h-6 bg-gray-100 rounded-lg" />
-          <div className="h-6 bg-gray-100 rounded-lg" />
-        </div>  
+        <p className="text-gray-600 text-center">{error || 'Burç yorumu bulunamadı'}</p>
       </div>
     );
   }
@@ -55,49 +52,48 @@ export default function DailyHoroscope({sunSign}: {sunSign: string}) {
         <div>
           <h2 className="text-lg font-semibold text-gray-900">Bugün Sizi Neler Bekliyor?</h2>
         </div>
-        <Sparkles className="h-6 w-6 text-EF7874" />
       </div>
 
-        <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <CalendarRange className="h-6 w-6 text-EF7874" />
-          <h2 className='text-lg font-semibold text-gray-900'>Genel</h2>
-          </div>            <p className="text-gray-600 mb-6">
-              {dailyHoroscope?.horoscope}
-              </p>
-        </div>
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-          <Heart className="h-6 w-6 text-EF7874" />
-          <h2 className='text-lg font-semibold text-gray-900'>Aşk</h2>
-          </div>
+      <div className="space-y-6">
+        <HoroscopeSection
+          icon={CalendarRange}
+          title="Genel"
+          content={dailyHoroscope.horoscope}
+        />
+        <HoroscopeSection
+          icon={Heart}
+          title="Aşk"
+          content={dailyHoroscope.love}
+        />
+        <HoroscopeSection
+          icon={Briefcase}
+          title="Kariyer"
+          content={dailyHoroscope.career}
+        />
+        <HoroscopeSection
+          icon={Activity}
+          title="Sağlık"
+          content={dailyHoroscope.health}
+        />
+      </div>
+    </div>
+  );
+}
 
-            <p className="text-gray-600 mb-6">
-              {dailyHoroscope?.love}
-              </p>
-        </div>
+interface HoroscopeSectionProps {
+  icon: React.ElementType;
+  title: string;
+  content: string;
+}
 
-        <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Briefcase className="h-6 w-6 text-EF7874" />
-          <h2 className='text-lg font-semibold text-gray-900'>Kariyer</h2>
-          </div>
-
-            <p className="text-gray-600 mb-6">
-              {dailyHoroscope?.career}
-              </p>
-        </div>
-        
-
-        <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Activity className="h-6 w-6 text-EF7874" />
-          <h2 className='text-lg font-semibold text-gray-900'>Sağlık</h2>
-          </div>
-            <p className="text-gray-600 mb-6">
-              {dailyHoroscope?.health}
-              </p>
-        </div>
+function HoroscopeSection({ icon: Icon, title, content }: HoroscopeSectionProps) {
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <Icon className="h-6 w-6 text-EF7874" />
+        <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+      </div>
+      <p className="text-gray-600">{content}</p>
     </div>
   );
 }

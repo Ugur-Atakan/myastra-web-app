@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import DeliveryForm from '../components/checkout/DeliveryForm';
 import OrderSummary from '../components/checkout/OrderSummary';
@@ -9,13 +10,18 @@ import { BuyPackageRequest } from '../types/birthChart';
 import { useAppSelector } from '../store/hooks';
 import instance from '../http/instance';
 import { PartnerInfoDto } from '../types/partner';
+import toast from 'react-hot-toast';
+import { checkBirthDataComplete } from '../utils/validation';
 
 export default function Checkout() {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [showPayment, setShowPayment] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState<PartnerInfoDto | null>(null);
   const selectedPackage = useAppSelector((state) => state.market.selectedPackage);
   const appliedCoupon = useAppSelector((state) => state.market.appliedCoupon);
+  const userData = useAppSelector((state) => state.user.userData);
+  
   const [deliveryData, setDeliveryData] = useState<BuyPackageRequest['billingInfo']>({
     fullName: "",
     idNumber: "",
@@ -27,6 +33,18 @@ export default function Checkout() {
   const [paymentLink, setPaymentLink] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!selectedPackage) {
+      navigate('/dashboard');
+      return;
+    }
+
+    if (!checkBirthDataComplete(userData)) {
+      navigate('/dashboard/settings');
+      return;
+    }
+  }, [selectedPackage, userData, navigate]);
+
+  useEffect(() => {
     if (selectedPackage?.id) {
       setDeliveryData((prevData) => ({
         ...prevData,
@@ -35,12 +53,18 @@ export default function Checkout() {
     }
   }, [selectedPackage?.id]);
 
-  // Add scroll to top effect when step changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentStep]);
 
   const handleDeliverySubmit = async (data: BuyPackageRequest['billingInfo']) => {
+    const isRelationshipPackage = selectedPackage?.packageType === 'SYNASTRY';
+    
+    if (isRelationshipPackage && !selectedPerson) {
+      toast.error('Lütfen ilişki analizi yapılacak kişiyi seçin');
+      return;
+    }
+
     try {
       setDeliveryData(data);
       const response = await instance.post("/checkout/buy", {
@@ -53,7 +77,7 @@ export default function Checkout() {
       setCurrentStep(2);
       setShowPayment(true);
     } catch (error) {
-      console.error("Ödeme sayfası yüklenirken bir hata oluştu:", error);
+      toast.error("Ödeme sayfası yüklenirken bir hata oluştu");
     }
   };
 
