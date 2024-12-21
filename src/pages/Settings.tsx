@@ -1,6 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { useAppSelector } from "../store/hooks";
 import { useNavigate } from "react-router-dom";
+import DashboardLayout from "../components/layout/DashboardLayout";
 
 export default function Settings() {
 
@@ -9,6 +10,7 @@ export default function Settings() {
     const navigate = useNavigate();
    
     return (
+        <DashboardLayout>
         <div className="max-w-7xl mx-auto px-4 py-8">
             <h2 className="text-2xl font-semibold mb-4">Ayarlar</h2>
             <div className="bg-white p-4 rounded-lg shadow">
@@ -53,7 +55,9 @@ export default function Settings() {
           Geri Dön
         </button>
             </div>
+        
         </div>
+        </DashboardLayout>
     )
 
 }

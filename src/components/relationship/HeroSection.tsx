@@ -1,9 +1,12 @@
-import { useNavigate } from 'react-router-dom';
-import { Heart, Sparkles, ArrowRight, ArrowDown } from 'lucide-react';
+import { Heart, Sparkles,ArrowDown } from 'lucide-react';
 
-export default function HeroSection() {
-  const navigate = useNavigate();
+interface HeroSectionProps {
+  onScrollToPackages: () => void;
+  onScrollToServiceInfo: () => void;
+}
 
+
+export default function HeroSection({ onScrollToPackages,onScrollToServiceInfo }: HeroSectionProps) {
   return (
     <div className="relative overflow-hidden">
       {/* Background Elements */}
@@ -32,14 +35,15 @@ export default function HeroSection() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <button 
-                onClick={() => navigate('/dashboard/relationship/analysis')}
+                onClick={() => onScrollToPackages()}
                 className="inline-flex items-center justify-center gap-2 bg-EF7874 text-white px-8 py-4 rounded-xl text-lg font-medium hover:bg-opacity-90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
               >
                 <Heart className="h-5 w-5" />
                 Analize Başla
               </button>
-              
-              <button className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-xl text-lg font-medium transition-all border border-gray-200">
+              <button 
+              onClick={onScrollToServiceInfo}
+              className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-xl text-lg font-medium hover:-translate-y-0.5">
                 Daha Fazla Bilgi
                 <ArrowDown className="h-5 w-5" />
               </button>

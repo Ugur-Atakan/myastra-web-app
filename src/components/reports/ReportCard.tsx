@@ -1,25 +1,11 @@
 import { FileText, Clock, Download } from 'lucide-react';
 import { UserReport } from '../../types/report';
+import { formatOrderStatus } from '../../utils/common';
 
 
 
 interface ReportCardProps {
   report: UserReport;
-}
-
-const formatOrderStatus= (status:string ) => {
-  switch (status) {
-    case 'COMPLETED':
-      return 'Hazır';
-    case 'IN_PROGRESS':
-      return 'Hazırlanıyor';
-    case 'REJECTED':
-      return 'Reddedildi';
-    case 'CANCELLED':
-      return 'İptal Edildi';
-    default:
-      return 'Hazırlanıyor';
-  }
 }
 
 export default function ReportCard({ report }: ReportCardProps) {
@@ -49,14 +35,19 @@ export default function ReportCard({ report }: ReportCardProps) {
           report.status === 'COMPLETED' 
             ? 'bg-green-100 text-green-600' 
             : 'bg-yellow-100 text-yellow-600'
-        }`}>
+        }`}
+     
+         >
           { formatOrderStatus(report.status)}
+          
         </div>
+        
       </div>
 
       <p className="text-gray-600 text-sm mb-6">{report.packageDescription}</p>
 
-      {report.status === 'COMPLETED' ? (
+      
+      {report.status === 'COMPLETED' && (
         <a
           href={report.documentLink}
           target="_blank"
@@ -66,11 +57,6 @@ export default function ReportCard({ report }: ReportCardProps) {
           <Download className="h-5 w-5" />
           Raporu İndir
         </a>
-      ) : (
-        <div className="flex items-center justify-center gap-2 text-gray-500">
-          <Clock className="h-5 w-5" />
-          <span>2-3 gün içinde hazır olacak</span>
-        </div>
       )}
     </div>
   );

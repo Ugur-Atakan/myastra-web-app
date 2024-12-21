@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 import Sidebar from './Sidebar';
-import { Menu } from 'lucide-react';
+import BottomTabs from './BottomTabs';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -13,10 +13,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     <div className="min-h-screen flex bg-gray-50">
       {/* Mobile menu button */}
       <button
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-white shadow-sm"
+       
+        className="lg:hidden fixed bottom-4 left-0 right-0 left-4 z-50 p-2 rounded-lg bg-white shadow-sm"
       >
-        <Menu className="h-6 w-6 text-gray-600" />
+                    {/* Bottom Tabs */}
+          <BottomTabs  openSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       </button>
 
       {/* Overlay for mobile */}

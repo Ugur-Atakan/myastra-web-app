@@ -1,13 +1,11 @@
 import { Calendar } from 'lucide-react';
 import { useIncompleteDataCheck } from '../../hooks/useIncompleteDataCheck';
-import BirthChartForm from '../common/BirthChartForm';
 import toast from 'react-hot-toast';
 
 export default function AstrologerAppointment() {
   const { isModalOpen, setIsModalOpen, missingFields, checkDataAndProceed } = useIncompleteDataCheck();
 
   const hasAppointment = false;
-
 
  const handleAction = () => {
   toast.success('Görüşme planlandı');
@@ -40,10 +38,7 @@ export default function AstrologerAppointment() {
           </button>
         </div>
       )}
-      <BirthChartForm
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-      />
+     
     </div>
   
   );

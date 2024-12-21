@@ -1,20 +1,21 @@
-import { useNavigate } from 'react-router-dom';
-import { Activity, Sparkles, ArrowRight, ArrowDown } from 'lucide-react';
+import { Activity, Sparkles,ArrowDown } from 'lucide-react';
 import BirthChartForm from '../common/BirthChartForm';
 import { useIncompleteDataCheck } from '../../hooks/useIncompleteDataCheck';
 
-export default function HeroSection() {
+
+interface HeroSectionProps {
+  onScrollToPackages: () => void;
+  onScrollToServiceInfo: () => void;
+}
+
+
+export default function HeroSection({ onScrollToPackages,onScrollToServiceInfo }: HeroSectionProps) {
   const { isModalOpen, setIsModalOpen, missingFields, checkDataAndProceed } = useIncompleteDataCheck();
-
-
-  const navigate = useNavigate();
-
-
-
+  
   const handleAction = () => {
-    console.log('Clicked') 
-    navigate('/dashboard/birth-chart');
+    onScrollToPackages();
   }
+  
   return (
     <div className="relative overflow-hidden">
       {/* Background Elements */}
@@ -44,14 +45,16 @@ export default function HeroSection() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <button 
-               onClick={() => checkDataAndProceed(handleAction)}
+               onClick={handleAction}
                 className="inline-flex items-center justify-center gap-2 bg-EF7874 text-white px-8 py-4 rounded-xl text-lg font-medium hover:bg-opacity-90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
               >
                 <Activity className="h-5 w-5" />
                 Doğum Haritamı Analiz Et
               </button>
               
-              <button disabled className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-xl text-lg font-medium">
+              <button 
+              onClick={onScrollToServiceInfo}
+              className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-xl text-lg font-medium hover:-translate-y-0.5">
                 Daha Fazla Bilgi
                 <ArrowDown className="h-5 w-5" />
               </button>

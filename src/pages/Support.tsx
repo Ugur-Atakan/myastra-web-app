@@ -1,32 +1,36 @@
-import { useState, useEffect } from 'react';
-import DashboardLayout from '../components/layout/DashboardLayout';
-import TicketList from '../components/support/TicketList';
-import NewTicketModal from '../components/support/NewTicketModal';
-import { Plus } from 'lucide-react';
-import instance from '../http/instance';
+import { useState, useEffect } from "react";
+import DashboardLayout from "../components/layout/DashboardLayout";
+import TicketList from "../components/support/TicketList";
+import NewTicketModal from "../components/support/NewTicketModal";
+import { Plus } from "lucide-react";
+import instance from "../http/instance";
 
 export default function Support() {
   const [userTickets, setUserTickets] = useState([]);
   const [isNewTicketModalOpen, setIsNewTicketModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const fetchData = async () => {
+    try {
+      const response = await instance.get("/support/my-tickets");
+      const ticketsData = response.data;
+      console.log("ticketsData", ticketsData);
+      setUserTickets(ticketsData);
+    } catch (error) {
+      console.error("Veriler yüklenirken bir hata oluştu:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await instance.get('/support/my-tickets');
-        const ticketsData = response.data;
-        console.log('ticketsData', ticketsData);
-        setUserTickets(ticketsData);
-      } catch (error) {
-        console.error('Veriler yüklenirken bir hata oluştu:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
 
+  const handleCloseModal = () => {
+    fetchData();
+    setIsNewTicketModalOpen(false);
+  };
 
   if (loading) {
     return (
@@ -41,7 +45,6 @@ export default function Support() {
       </DashboardLayout>
     );
   }
-
 
   return (
     <DashboardLayout>
@@ -67,7 +70,7 @@ export default function Support() {
         {/* New Ticket Modal */}
         <NewTicketModal
           isOpen={isNewTicketModalOpen}
-          onClose={() => setIsNewTicketModalOpen(false)}
+          onClose={() => handleCloseModal()}
         />
       </div>
     </DashboardLayout>

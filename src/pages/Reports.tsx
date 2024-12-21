@@ -15,7 +15,6 @@ export default function Reports() {
     const fetchData = async () => {
       try {
         const reportsResponse = await instance.get('/user/my-reports');
-   
         const reportsData =reportsResponse.data;
         console.log('Raporlar:', reportsData);
         setReports(reportsData);

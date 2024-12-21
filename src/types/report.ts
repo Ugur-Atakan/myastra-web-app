@@ -1,3 +1,5 @@
+import { OrderStatus } from "./enums";
+
 export interface Report {
   id: string;
   userId: string;
@@ -27,7 +29,7 @@ export interface Package{
   export interface UserReport {
     id: string;
     type: string;
-    status: string;
+    status: OrderStatus;
     merchant_oid: string;
     createdAt: Date;
     meetLink: string;
