@@ -22,8 +22,9 @@ export default function DailyHoroscope({ sunSign }: DailyHoroscopeProps) {
       }
 
       try {
-        const response = await instance.get(`/horoscope/daily/${sunSign}`);
-        setDailyHoroscope(response.data);
+        const response = await instance.get(`/astrology/get-daily-by-sign/${sunSign}`);
+        console.log(response.data[0]);
+        setDailyHoroscope(response.data[0 ]);
       } catch (error) {
         setError('Günlük burç yorumu yüklenirken bir hata oluştu');
       } finally {
