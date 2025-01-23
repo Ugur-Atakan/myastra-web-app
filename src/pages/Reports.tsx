@@ -11,23 +11,23 @@ export default function Reports() {
   const [reports, setReports] = useState<UserReport[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const reportsResponse = await instance.get('/user/my-reports');
-        const reportsData =reportsResponse.data;
-        console.log('Raporlar:', reportsData);
-        setReports(reportsData);
-      } catch (error) {
-        console.error('Veriler yüklenirken bir hata oluştu:', error);
-        toast.error('Raporlar yüklenirken bir hata oluştu');
-        setLoading(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const reportsResponse = await instance.get('/user/my-reports');
+          const reportsData =reportsResponse.data;
+          console.log('Raporlar:', reportsData);
+          setReports(reportsData);
+        } catch (error) {
+          console.error('Veriler yüklenirken bir hata oluştu:', error);
+          toast.error('Raporlar yüklenirken bir hata oluştu');
+          setLoading(false);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchData();
+    }, []);
 
   if (loading) {
     return (

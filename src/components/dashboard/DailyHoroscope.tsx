@@ -14,29 +14,35 @@ export default function DailyHoroscope({ sunSign }: DailyHoroscopeProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!sunSign) return;
+  
     const getDailyHoroscope = async () => {
-      if (!sunSign) {
-        setError('Burç bilgisi bulunamadı');
-        setLoading(false);
-        return;
-      }
-
+      setLoading(true);
+      setError(null);
+  
       try {
         const response = await instance.get(`/astrology/get-daily-by-sign/${sunSign}`);
-        console.log(response.data[0]);
-        setDailyHoroscope(response.data[0 ]);
+        setDailyHoroscope(response.data[0]);
       } catch (error) {
         setError('Günlük burç yorumu yüklenirken bir hata oluştu');
       } finally {
         setLoading(false);
       }
     };
-
+  
     getDailyHoroscope();
   }, [sunSign]);
 
   if (loading) {
     return <DailyHoroscopeSkeleton />;
+  }
+
+  if (!sunSign) {
+    return (
+      <div className="bg-white rounded-2xl p-6 shadow-sm">
+        <p className="text-gray-600 text-center">Burç bilgisi yükleniyor...</p>
+      </div>
+    );
   }
 
   if (error || !dailyHoroscope) {

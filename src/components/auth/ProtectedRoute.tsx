@@ -26,13 +26,10 @@ export default function ProtectedRoute({ children, requiredRoles }: ProtectedRou
   const getUserData = async () => {
     try {
       const response = await instance.post('/user/me');
-      console.log('User data fetched:', response.data); 
       dispatch(setUserData(response.data));
     } catch (error: any) {
       removeTokens();
       dispatch(logOut());
-   
-      const errorMessage = error?.response?.data?.message || error.message || 'An unexpected error occurred.';
       toast.error("Kullanıcı bilgileri alınamadı. Lütfen tekrar giriş yapın.");
       navigate('/');
     }
@@ -42,7 +39,8 @@ export default function ProtectedRoute({ children, requiredRoles }: ProtectedRou
     if (tokens) {
       getUserData();
     }
-  }, [tokens]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!tokens) {
     return <Navigate to="/" state={{ from: location }} replace />;

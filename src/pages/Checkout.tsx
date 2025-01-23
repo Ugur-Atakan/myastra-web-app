@@ -76,8 +76,13 @@ export default function Checkout() {
       setPaymentLink(response.data);
       setCurrentStep(2);
       setShowPayment(true);
-    } catch (error) {
+    } catch (error:any) {
+      console.log('Ödeme sayfası yüklenirken bir hata oluştu:', error);
+      if(error.response.status === 403) {
+        toast.error("Oturumunuzun süresi dolmuş. Lütfen tekrar giriş yapın");
+      } else {
       toast.error("Ödeme sayfası yüklenirken bir hata oluştu");
+    }
     }
   };
 

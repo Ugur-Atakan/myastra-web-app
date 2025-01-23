@@ -1,13 +1,38 @@
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, FileText, Home } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
+import instance from '../http/instance';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function PaymentSuccess() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get('orderId');
- const total_amount = searchParams.get('total_amount');
+  const [isLoading, setIsLoading] = useState(false);
+const [total_amount, setTotalAmount] = useState(null);
+
+
+  useEffect(() => {
+    const fetchTotalAmount = async () => {
+      setIsLoading(true);
+      try {
+        const response = await instance.get(`/checkout/get-details/${orderId}`);
+        setTotalAmount(response.data.finalPrice);
+        setIsLoading(false);
+      } catch (error) {
+        toast.error('Ödeme bilgileri alınırken bir hata oluştu');
+        setIsLoading(false);
+        return null;
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchTotalAmount();
+  }, [orderId]);
   
+
+
  const amountToCurrency = (amount: string) => {
     return new Intl.NumberFormat('tr-TR', {
       style: 'currency',
@@ -15,8 +40,20 @@ export default function PaymentSuccess() {
     }).format(Number(amount));
   }
 
-  console.log('Order ID:', orderId);
-  console.log('Total Amount:', total_amount);
+  if(isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
+        <div className="max-w-md w-full text-center">
+          <div className="animate-pulse space-y-4">
+            <div className="h-12 bg-gray-100 rounded-xl" />
+            <div className="h-12 bg-gray-100 rounded-xl" />
+            <div className="h-12 bg-gray-100 rounded-xl" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center">
